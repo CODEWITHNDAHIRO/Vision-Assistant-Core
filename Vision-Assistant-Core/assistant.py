@@ -1,28 +1,39 @@
 import cv2
-import time
+import mediapipe as mp
 
 def start_assistant():
-    #using the default webcam
-    video = cv2.videoCapture(0)
+    # Initialize MediaPipe Face Detection
+    mp_face_detection = mp.solutions.face_detection
+    mp_drawing = mp.solutions.drawing_utils
     
-    print("AI assistant is waking up...")
-    while True:
-        check, frame = video.read()
-        if not check:
-            break
-        #basic grayscale for processing
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        #we will use a basic face detector for day1
-        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-        for (x, y, w, h) in faces:
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
-            cv2.putText(frame, "user", (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
-            cv2.imshow("AI Assistant view", frame)
-            # press 'q' to shutdown
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+    cap = cv2.VideoCapture(0)
+
+    # Use 'with' to handle the AI model memory safely
+    with mp_face_detection.FaceDetection(model_selection=0, min_detection_confidence=0.5) as face_detection:
+        print("AI Assistant (v2.0) is Active...")
+
+        while cap.isOpened():
+            success, image = cap.read()
+            if not success:
                 break
-    video.release()
+
+            # Convert to RGB for MediaPipe
+            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            results = face_detection.process(image_rgb)
+
+            # Draw the detections
+            if results.detections:
+                for detection in results.detections:
+                    mp_drawing.draw_detection(image, detection)
+                    print("Status: User Present")
+
+            cv2.imshow('Vision Assistant Core', image)
+            
+            if cv2.waitKey(5) & 0xFF == ord('q'):
+                break
+
+    cap.release()
     cv2.destroyAllWindows()
-    if __name__ == "__main__":
-        start_assistant()
+
+if __name__ == "__main__":
+    start_assistant()
