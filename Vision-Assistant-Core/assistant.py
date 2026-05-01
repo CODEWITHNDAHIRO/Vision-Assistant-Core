@@ -1,28 +1,39 @@
 import cv2
-import time
+import mediapipe as mp
 
 def start_assistant():
-    #using the default webcam
-    video = cv2.videoCapture(0)
+    mp_hands = mp.solutions.hands
+    mp_drawing = mp.solutions.drawing_utils
     
-    print("AI assistant is waking up...")
-    while True:
-        check, frame = video.read()
-        if not check:
-            break
-        #basic grayscale for processing
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        #we will use a basic face detector for day1
-        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-        for (x, y, w, h) in faces:
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
-            cv2.putText(frame, "user", (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
-            cv2.imshow("AI Assistant view", frame)
-            # press 'q' to shutdown
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-    video.release()
+    cap = cv2.VideoCapture(0)
+
+    # Adding Hand Tracking alongside Face Detection
+    with mp_hands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.5) as hands:
+        print("Vision Assistant (v3.0) - Hand Gestures Active")
+
+        while cap.isOpened():
+            success, image = cap.read()
+            if not success: break
+
+            # Flip image for a "mirror" feel
+            image = cv2.flip(image, 1)
+            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            results = hands.process(image_rgb)
+
+            if results.multi_hand_landmarks:
+                for hand_landmarks in results.multi_hand_landmarks:
+                    # Draw the "skeleton" of the hand
+                    mp_drawing.draw_landmarks(image, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+                    
+                    # Logic for "Pinch" gesture (Index and Thumb)
+                    # We will refine this "Correction" tomorrow!
+                    print("Gesture Detected: Monitoring input...")
+
+            cv2.imshow('Vision Assistant Core', image)
+            if cv2.waitKey(5) & 0xFF == ord('q'): break
+
+    cap.release()
     cv2.destroyAllWindows()
-    if __name__ == "__main__":
-        start_assistant()
+
+if __name__ == "__main__":
+    start_assistant()
