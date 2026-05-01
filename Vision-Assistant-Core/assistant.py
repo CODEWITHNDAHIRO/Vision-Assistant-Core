@@ -3,6 +3,8 @@ import mediapipe as mp
 
 def start_assistant():
     mp_hands = mp.solutions.hands
+    # Initialize MediaPipe Face Detection
+    mp_face_detection = mp.solutions.face_detection
     mp_drawing = mp.solutions.drawing_utils
     
     cap = cv2.VideoCapture(0)
