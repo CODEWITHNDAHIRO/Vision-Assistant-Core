@@ -1,10 +1,10 @@
 import cv2
 import mediapipe as mp
+mp_hands = mp.solutions.hands
+mp_drawing = mp.solutions.drawing_utils
 import math
 
-def start_assistant():
-    mp_hands = mp.solutions.hands
-    mp_drawing = mp.solutions.drawing_utils
+def start_assistant(): 
     cap = cv2.VideoCapture(0)
 
     with mp_hands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7) as hands:
