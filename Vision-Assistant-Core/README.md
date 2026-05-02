@@ -1,2 +1,2 @@
-#vision-Assistant-Core
-Day 2: upgraded to MediaPipe and cleaned up repository architecture.
+# Vision-Assistant-Core
+Day1:building the foundation for an AI powered desktop assistant
