@@ -6,7 +6,7 @@ import math
 import os
 
 def set_volume(percentage):
-    # This sends a command to your Mac to set the volume
+    # This sends a command to  Mac to set the volume
     # It maps 0-100 to the system's 0-7 range
     volume_level = int(percentage / 14) 
     os.system(f"osascript -e 'set volume {volume_level}'")
