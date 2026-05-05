@@ -13,10 +13,18 @@ def start_assistant():
     is_active = False
 
     with mp_hands.Hands(min_detection_confidence=0.8, min_tracking_confidence=0.8) as hands:
+        frame_count = 0
+
         while cap.isOpened():
             success, image = cap.read()
             if not success: break
 
+            frame_count += 1
+            #this only runs the AI every 3rd frame to save CPU
+            if frame_count % 3 != 0:
+                cv2.imshow('Vision Assistant Core v2.0-Alpha', image)
+                if cv2.waitKey(5) & 0xFF == ord('q'): break
+                continue
             image = cv2.flip(image, 1)
             h, w, _ = image.shape
             results = hands.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
