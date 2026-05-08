@@ -1,0 +1,11 @@
+{
+    "settings": {
+        "min_confidence": 0.8,
+        "show_viewfinder": true
+    },
+    "gestures": {
+        "volume_control": "pinch",
+        "toggle_system": "peace_sign",
+        "emergency_mute": "fist"
+    }
+}
