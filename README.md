@@ -67,7 +67,7 @@ This project includes a comprehensive FIX_LOG.md that documents the resolution o
 2.    Camera lifecycle "Release" errors.
 3.    MacOS-specific hardware permission blocks.
 4.    Notification system implementation.
- ###Repository Structure:
+ ### Repository Structure:
  .
 ├── assistant.py         # Main AI Logic
 ├── config.json          # System Configuration
